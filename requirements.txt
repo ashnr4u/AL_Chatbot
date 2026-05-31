@@ -1,0 +1,11 @@
+google-genai
+python-dotenv
+langchain
+langchain-community
+pypdf              
+sentence-transformers
+langchain-text-splitters
+torchvision
+faiss-cpu
+streamlit
+groq
