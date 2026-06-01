@@ -56,25 +56,28 @@ Step 1: Clone the Repository
     cd <repository-name>
 
 Step 2: Create Virtual Environment (Recommended)
+```
     python -m venv venv
     Activate it:
     Windows:venv\Scripts\activate
     Mac / Linux:source venv/bin/activate
-
+```
 Step 3: Install Dependencies
+```
     pip install -r requirements.txt
-
+```
 Step 4: Configure Environment Variables
+```
     Create a .env file in the root directory:
     GROQ_API_KEY=your_api_key_here
-
+```
 ## Running the Application
 
 Launch the Streamlit application:
-
+```
 bash
 python -m streamlit run app.py
-
+```
 Then:
 
 1. Upload a PDF document
