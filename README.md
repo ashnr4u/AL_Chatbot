@@ -112,26 +112,29 @@ The model is strictly grounded in retrieved context and is instructed to avoid h
 - Do not make assumptions
 - If information is unavailable, return: NOT FOUND IN DOCUMENT
 
+
 ## Project Structure
-CHATBOT/
+
+```
+AL_chatbot/
 │
-├── chunks/                # Processed and stored text chunks
-├── data/                  # Raw uploaded PDF documents
-├── notebooks/             # Experiments and preprocessing notebooks
-├── vectordb/              # FAISS vector database storage
+├── chunks/              # Processed and stored text chunks
+├── data/                # Raw uploaded PDF documents
+├── notebooks/           # Experiments and preprocessing notebooks
+├── vectordb/            # FAISS vector database storage
 │
-├── src/                   # Core RAG pipeline modules
+├── src/                 # Core RAG pipeline modules
 │   ├── __init__.py
-│   ├── config.py         # Configuration settings (paths, models, constants)
+│   ├── config.py        # Configuration settings (paths, models, constants)
 │   ├── retriever.py     # FAISS-based semantic retrieval logic
 │   ├── generator.py     # LLM prompt construction + response generation
 │   └── pipeline.py      # End-to-end RAG pipeline orchestration
 │
-├── app.py                # Streamlit chatbot application
+├── app.py               # Streamlit chatbot application
 ├── requirements.txt     # Python dependencies
 ├── README.md            # Project documentation
 └── .env                 # Environment variables (API keys)
-
+```
 ## Limitations
 
 - Processes one PDF at a time
