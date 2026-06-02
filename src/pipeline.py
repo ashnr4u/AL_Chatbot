@@ -1,16 +1,23 @@
-# src/pipeline.py
+import json
 import os
 import re
 import tempfile
-import json
+
 import faiss
 import numpy as np
-import streamlit as st
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from .config import CHUNK_SIZE, CHUNK_OVERLAP, CHUNKS_PATH, VECTORDB_PATH, DATA_PATH
+
+from .config import (
+    CHUNK_OVERLAP,
+    CHUNK_SIZE,
+    CHUNKS_PATH,
+    DATA_PATH,
+    VECTORDB_PATH,
+)
 from .retriever import load_embedding_model
 
+#preprocessing our document
 def clean_text(text):
     #Clean and normalize text
     text = re.sub(r"\s+", " ", text)
@@ -19,16 +26,15 @@ def clean_text(text):
 
 def process_pdf(uploaded_pdf=None, pdf_path=None):
     
-    
     # Handle either uploaded file or local file from /data
     if uploaded_pdf is not None:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
             temp_file.write(uploaded_pdf.read())
             pdf_path = temp_file.name
     elif pdf_path is not None:
-        pdf_path = pdf_path
+        # Use the provided path - do nothing, just keep pdf_path as is
+        pass
     else:
-        # Look for PDF in /data folder
         data_files = [f for f in os.listdir(DATA_PATH) if f.endswith('.pdf')]
         if data_files:
             pdf_path = os.path.join(DATA_PATH, data_files[0])
@@ -72,8 +78,16 @@ def process_pdf(uploaded_pdf=None, pdf_path=None):
     # Create embeddings
     model = load_embedding_model()
     texts = [chunk.page_content for chunk in chunks]
+
+    if not texts:
+        raise ValueError(
+            "No extractable text found in the PDF. The PDF may be a scanned document, image, or" \
+            " certificate."
+        )
     embeddings = model.encode(texts, show_progress_bar=True)
     embeddings = np.array(embeddings, dtype="float32")
+
+
 
     # cosine similarity setup
     faiss.normalize_L2(embeddings)
@@ -86,3 +100,7 @@ def process_pdf(uploaded_pdf=None, pdf_path=None):
     faiss.write_index(index, VECTORDB_PATH)
 
     return model, chunks, index
+
+# model: SentenceTransformer embedding model (to encode user queries)
+# chunks: List of Document objects containing chunk text + metadata  
+# index: FAISS index with normalized embeddings for similarity search

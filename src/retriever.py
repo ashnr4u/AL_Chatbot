@@ -1,5 +1,4 @@
-# src/retriever.py
-import os
+
 import faiss
 import numpy as np
 import streamlit as st
@@ -13,19 +12,19 @@ def load_embedding_model():
 
 def retrieve(query, embedding_model, index, chunks, top_k=TOP_K_RETRIEVAL):
     
-   
+  
     query_embedding = (
         embedding_model
         .encode([query])  #treated as 1-item batch
         .astype("float32")
     )
-
+    
     faiss.normalize_L2(query_embedding)
 
     scores, indices = (
         index.search(query_embedding, top_k)
     )
-
+    print
     retrieved_chunks = []
 
     for score, idx in zip(scores[0], indices[0]):  
@@ -49,3 +48,4 @@ def retrieve(query, embedding_model, index, chunks, top_k=TOP_K_RETRIEVAL):
         )
 
     return retrieved_chunks
+# Returns: List of dicts containing relevant chunks with their text, page number, and similarity score

@@ -41,7 +41,7 @@ def stream_response(query, context):
     stream = client.chat.completions.create(
         model=LLM_MODEL,
         messages=[{"role": "user", "content": prompt}],
-        temperature=1,
+        temperature=0.1,
         stream=True
     )
     

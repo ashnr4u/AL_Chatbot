@@ -37,9 +37,8 @@ if "messages" not in st.session_state:
 if "vector_ready" not in st.session_state:
     st.session_state.vector_ready = False
 
-# ==========================================================
-#                           SIDEBAR
-# ==========================================================
+
+#---------SIDEBAR---------------
 
 with st.sidebar:
     st.header("System Information")
@@ -80,11 +79,15 @@ if not st.session_state.vector_ready:
     
     if pdf_to_process:
         with st.spinner("Processing PDF and creating embeddings..."):
-            if uploaded_file:
-                embedding_model, chunks, index = process_pdf(uploaded_pdf=uploaded_file)
-            else:
-                embedding_model, chunks, index = process_pdf(pdf_path=os.path.join(DATA_PATH, pdf_to_process))
             
+            try:
+                if uploaded_file:
+                    embedding_model, chunks, index = process_pdf( uploaded_pdf=uploaded_file)
+                else:
+                    embedding_model, chunks, index = process_pdf(pdf_path=os.path.join(DATA_PATH, pdf_to_process))
+            except ValueError as e:
+                st.error(f"PDF Processing Failed: {e}")
+                st.stop()
             st.session_state.embedding_model = embedding_model
             st.session_state.chunks = chunks
             st.session_state.index = index
