@@ -1,151 +1,325 @@
 # PDF RAG Chatbot with Streaming Responses
 
-
 ## Demo
 
-Video Demo: <https://drive.google.com/file/d/1huUK3IX7Zx3be7BA8DW9S5R-bfIjnXES/view?usp=sharing>  
-Screenshots: <https://drive.google.com/file/d/15lIUxAv5ZxpFaDpCAzQ-wphhLOXq7MtE/view?usp=sharing>
+**Video Demo:** https://drive.google.com/file/d/1huUK3IX7Zx3be7BA8DW9S5R-bfIjnXES/view?usp=sharing
 
-## Overview
+**Screenshots:** https://drive.google.com/file/d/15lIUxAv5ZxpFaDpCAzQ-wphhLOXq7MtE/view?usp=sharing
+
+---
+
+# Overview
 
 This project implements a Retrieval-Augmented Generation (RAG) chatbot capable of answering questions from uploaded PDF documents. The system combines semantic search using vector embeddings with a Large Language Model (LLM) to provide accurate, context-aware responses.
 
-The chatbot is built using Streamlit, FAISS, Sentence Transformers, and Groq-hosted Llama 3.3, with support for real-time streaming responses and source chunk visualization.
+The chatbot is built using **Streamlit**, **FAISS**, **Sentence Transformers**, and **Groq-hosted Llama 3.3**, with support for:
 
-## Features
+* Real-time streaming responses
+* Source chunk visualization
+* Automated RAG evaluation using an LLM-as-a-Judge pipeline
 
-- PDF document upload and processing
-- Text cleaning and chunking
-- Semantic embeddings using BGE Small
-- FAISS vector database for retrieval
-- Retrieval-Augmented Generation (RAG) pipeline
-- Real-time streaming responses
-- Source chunk display with relevance scores
-- Chat history support
-- Simple and interactive Streamlit interface
+---
 
-## System Architecture
+# Features
 
-## System Architecture
+* PDF document upload and processing
+* Text cleaning and chunking
+* Semantic embeddings using BGE Small
+* FAISS vector database for retrieval
+* Retrieval-Augmented Generation (RAG)
+* Real-time streaming responses
+* Source chunk display with similarity scores
+* Chat history support
+* Automated RAG evaluation pipeline
+* LLM-based answer quality scoring
 
-PDF Upload → Text Extraction → Cleaning → Chunking → Embedding Generation → FAISS Indexing → Query Embedding →       Semantic Retrieval → Prompt Construction → LLM Generation → Streaming Response
+---
 
-## Technologies Used
-
-Embedding Model: BAAI/bge-small-en-v1.5
-- Selected for its strong semantic retrieval performance
-- Lightweight and efficient for CPU/GPU deployment
-- Performs well on sentence-level similarity tasks
-
-LLM: llama-3.3-70b-versatile (Groq API)
-- High-quality instruction-following capability
-- Fast inference through Groq’s optimized API
-- Strong reasoning and context adherence for RAG tasks
-
-Vector Database: FAISS
-- Fast similarity search
-- Local deployment
-- Efficient retrieval for RAG applications
-
-## Installation
-
-Clone Repository
-Step 1: Clone the Repository
-    bash
-    git clone <your-repository-url>
-    cd <repository-name>
-
-Step 2: Create Virtual Environment (Recommended)
-```
-    python -m venv venv
-    Activate it:
-    Windows:venv\Scripts\activate
-    Mac / Linux:source venv/bin/activate
-```
-Step 3: Install Dependencies
-```
-    pip install -r requirements.txt
-```
-Step 4: Configure Environment Variables
-```
-    Create a .env file in the root directory:
-    GROQ_API_KEY=your_api_key_here
-```
-## Running the Application
-
-Launch the Streamlit application:
-```
-bash
-python -m streamlit run app.py
-```
-Then:
-
-1. Upload a PDF document
-2. Wait for indexing to complete
-3. Ask questions related to the document
-4. View retrieved source chunks used to generate answers
-
-## RAG Pipeline
-
-Document Processing
-
-1. PDF extraction using PyPDFLoader
-2. Text cleaning using regular expressions
-3. Document chunking using RecursiveCharacterTextSplitter
-4. Embedding generation using BGE Small
-5. Storage in FAISS vector index
-
-Retrieval
-
-1. User query is converted into an embedding
-2. FAISS performs similarity search
-3. Top relevant chunks are retrieved
-
-Generation
-
-1. Retrieved chunks are injected into the prompt
-2. Llama 3.3 generates responses using only retrieved context
-3. Responses are streamed in real time
-
-## Prompt Strategy
-
-The model is strictly grounded in retrieved context and is instructed to avoid hallucination.
-- Answer only using provided context
-- Do not use external knowledge
-- Do not make assumptions
-- If information is unavailable, return: NOT FOUND IN DOCUMENT
-
-
-## Project Structure
+# System Architecture
 
 ```
+PDF Upload
+      │
+      ▼
+Text Extraction
+      │
+      ▼
+Cleaning
+      │
+      ▼
+Chunking
+      │
+      ▼
+Embedding Generation
+      │
+      ▼
+FAISS Index
+      │
+      ▼
+User Query
+      │
+      ▼
+Query Embedding
+      │
+      ▼
+Semantic Retrieval
+      │
+      ▼
+Prompt Construction
+      │
+      ▼
+Llama 3.3 (Groq)
+      │
+      ▼
+Streaming Response
+```
+
+---
+
+# RAG Evaluation Pipeline
+
+The project also includes an automated evaluation pipeline to measure the quality of generated answers.
+
+```
+Evaluation Dataset
+        │
+        ▼
+Retrieve Relevant Chunks
+        │
+        ▼
+Generate RAG Answer
+        │
+        ▼
+LLM-as-a-Judge Evaluation
+        │
+        ▼
+Groundedness
+Relevance
+Completeness
+Correctness
+        │
+        ▼
+Average Evaluation Score
+```
+
+The evaluator compares:
+
+* User Question
+* Retrieved Context
+* Generated Answer
+* Ground Truth Answer
+
+and returns structured scores along with qualitative feedback.
+
+---
+
+# Technologies Used
+
+## Embedding Model
+
+**BAAI/bge-small-en-v1.5**
+
+* Strong semantic retrieval performance
+* Lightweight and efficient
+* Excellent sentence-level similarity
+
+## Large Language Model
+
+**llama-3.3-70b-versatile (Groq API)**
+
+* Fast inference
+* Strong reasoning capability
+* High-quality instruction following
+* Streaming response support
+
+## Vector Database
+
+**FAISS**
+
+* Efficient similarity search
+* Local vector storage
+* Optimized retrieval performance
+
+---
+
+# Installation
+
+## 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd AL_chatbot
+```
+
+## 2. Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+## 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## 4. Configure Environment Variables
+
+Create a `.env` file.
+
+```text
+GROQ_API_KEY=your_api_key_here
+```
+
+---
+
+# Running the Chatbot
+
+```bash
+streamlit run app.py
+```
+
+Steps:
+
+1. Upload a PDF.
+2. Wait for indexing.
+3. Ask questions.
+4. View retrieved source chunks.
+5. Receive streamed responses.
+
+---
+
+# Running the Evaluation Pipeline
+
+Run:
+
+```bash
+python -m src.evaluate_pipeline
+```
+
+The evaluation pipeline:
+
+* Loads the evaluation dataset
+* Retrieves relevant document chunks
+* Generates answers using the RAG pipeline
+* Uses Groq Llama 3.3 as an LLM Judge
+* Scores each answer on:
+
+  * Groundedness
+  * Relevance
+  * Completeness
+  * Correctness
+* Computes the average evaluation score
+
+---
+
+# RAG Pipeline
+
+## Document Processing
+
+1. PDF extraction
+2. Text cleaning
+3. Recursive chunking
+4. Embedding generation
+5. FAISS indexing
+
+## Retrieval
+
+1. Convert user query into an embedding.
+2. Perform FAISS similarity search.
+3. Retrieve the top relevant chunks.
+
+## Generation
+
+1. Build prompt using retrieved context.
+2. Generate response with Llama 3.3.
+3. Stream the response to the UI.
+
+---
+
+# Prompt Strategy
+
+The chatbot is strictly grounded in retrieved context.
+
+Rules:
+
+* Answer only from retrieved context.
+* Do not use outside knowledge.
+* Do not hallucinate.
+* If the answer is unavailable, respond:
+
+```
+NOT FOUND IN DOCUMENT
+```
+
+---
+
+# Project Structure
+
+```text
 AL_chatbot/
 │
-├── chunks/              # Processed and stored text chunks
-├── data/                # Raw uploaded PDF documents
-├── notebooks/           # Experiments and preprocessing notebooks
-├── vectordb/            # FAISS vector database storage
+├── chunks/
+├── data/
+├── notebooks/
+├── vectordb/
 │
-├── src/                 # Core RAG pipeline modules
+├── src/
 │   ├── __init__.py
-│   ├── config.py        # Configuration settings (paths, models, constants)
-│   ├── retriever.py     # FAISS-based semantic retrieval logic
-│   ├── generator.py     # LLM prompt construction + response generation
-│   └── pipeline.py      # End-to-end RAG pipeline orchestration
+│   ├── config.py
+│   ├── pipeline.py
+│   ├── retriever.py
+│   ├── generator.py
+│   ├── evaluator.py
+│   ├── evaluation_data.py
+│   └── evaluate_pipeline.py
 │
-├── app.py               # Streamlit chatbot application
-├── requirements.txt     # Python dependencies
-├── README.md            # Project documentation
-└── .env                 # Environment variables (API keys)
+├── app.py
+├── requirements.txt
+├── README.md
+└── .env
 ```
-## Limitations
 
-- Processes one PDF at a time
-- Retrieval quality depends on chunking strategy
-- Large PDFs may require longer indexing times
-- Responses are limited to retrieved context
+---
 
+# Evaluation Metrics
 
-## Author
+The LLM evaluator scores each generated answer using:
 
-Ashutosh Narayan
+* **Groundedness** – Is the answer supported by the retrieved context?
+* **Relevance** – Does it answer the user's question?
+* **Completeness** – Does it cover all important information?
+* **Correctness** – Is it consistent with the expected answer?
+
+Each metric is scored from **1–10**, along with:
+
+* Overall score
+* Feedback explaining the evaluation
+
+---
+
+# Limitations
+
+* Processes one PDF at a time
+* Retrieval quality depends on chunking strategy
+* Large PDFs require longer indexing
+* Limited to retrieved context
+* LLM-based evaluation may exhibit minor subjective variation
+
+---
+
+# Author
+
+**Ashutosh Narayan**
